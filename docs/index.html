@@ -1,0 +1,3087 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinguaWork AI — Platforma rozwoju kompetencji językowych</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface-2: #fafbfd;
+  --border: #e2e6ef;
+  --border-strong: #cfd5e0;
+  --text: #1a2236;
+  --text-soft: #5a6478;
+  --text-mute: #8892a6;
+  --accent: #1e6fbf;
+  --accent-hover: #1860a8;
+  --accent-soft: #e8f1fa;
+  --success: #22c55e;
+  --success-soft: #dcfce7;
+  --warning: #f59e0b;
+  --warning-soft: #fef3c7;
+  --danger: #ef4444;
+  --danger-soft: #fee2e2;
+  --violet: #8b5cf6;
+  --violet-soft: #ede9fe;
+  --user-bubble: #1e6fbf;
+  --ai-bubble: #eef0f5;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+[data-theme="dark"] {
+  --bg: #0e1320;
+  --surface: #161c2e;
+  --surface-2: #1c2336;
+  --border: #2a3349;
+  --border-strong: #3a4561;
+  --text: #ecf0f7;
+  --text-soft: #b3bccd;
+  --text-mute: #7f8aa3;
+  --accent: #4a9eff;
+  --accent-hover: #6bb0ff;
+  --accent-soft: #1a2842;
+  --success: #34d399;
+  --success-soft: #14332a;
+  --warning: #fbbf24;
+  --warning-soft: #3a2c0e;
+  --danger: #f87171;
+  --danger-soft: #3a1a1a;
+  --violet: #a78bfa;
+  --violet-soft: #2a1f4a;
+  --user-bubble: #2b7fd4;
+  --ai-bubble: #232b40;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ============ SPLASH SCREEN ============ */
+.splash {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #0f1729 0%, #1e2944 50%, #1e6fbf 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: opacity 0.6s ease;
+  padding: 24px;
+}
+
+.splash.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.splash-card {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: clamp(28px, 4vw, 56px);
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+}
+
+.splash-logo {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 24px;
+  background: #fff;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(30, 111, 191, 0.4);
+}
+
+.splash h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.splash-subtitle {
+  font-size: clamp(14px, 1.4vw, 16px);
+  opacity: 0.78;
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+
+.splash-form {
+  text-align: left;
+}
+
+.splash-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  opacity: 0.92;
+}
+
+.splash-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.splash-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.splash-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.splash-hint {
+  font-size: 12px;
+  opacity: 0.68;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.splash-hint a {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.splash-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-top: 14px;
+  display: none;
+}
+
+.splash-error.visible { display: block; }
+
+.splash-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: #fff;
+  color: #1e6fbf;
+  font-weight: 600;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.splash-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.splash-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.splash-footer {
+  margin-top: 24px;
+  font-size: 11px;
+  opacity: 0.5;
+  text-align: center;
+}
+
+/* ============ APP LAYOUT ============ */
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: 60px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  grid-row: 1 / -1;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-svg {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.3px;
+}
+
+.brand-tag {
+  font-size: 10px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.nav {
+  flex: 1;
+  padding: 16px 12px;
+  overflow-y: auto;
+}
+
+.nav-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 10px 12px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: var(--text-soft);
+  margin-bottom: 2px;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+
+.nav-item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.sidebar-user {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.user-info { flex: 1; min-width: 0; }
+.user-name { font-size: 13px; font-weight: 600; }
+.user-role { font-size: 11px; color: var(--text-mute); }
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.topbar-title {
+  font-size: clamp(15px, 1.3vw, 17px);
+  font-weight: 600;
+  flex: 1;
+}
+
+.topbar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.topbar-badge.streak {
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-color: transparent;
+}
+
+.topbar-badge.ai-active {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: transparent;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-soft);
+  transition: all 0.15s;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.icon-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.text-btn {
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: all 0.15s;
+}
+
+.text-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.main {
+  grid-column: 2;
+  grid-row: 2;
+  overflow-y: auto;
+  padding: 28px;
+}
+
+.view { display: none; }
+.view.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ CARDS / COMPONENTS ============ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-title {
+  font-size: clamp(15px, 1.2vw, 17px);
+  font-weight: 600;
+  margin-bottom: 14px;
+  letter-spacing: -0.2px;
+}
+
+.section-subtitle {
+  color: var(--text-soft);
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.greeting {
+  margin-bottom: 24px;
+}
+
+.greeting h2 {
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.greeting p {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: var(--text-mute);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.kpi-value {
+  font-size: clamp(22px, 2.3vw, 28px);
+  font-weight: 700;
+  margin-top: 6px;
+  letter-spacing: -0.5px;
+}
+
+.kpi-trend {
+  font-size: 11px;
+  color: var(--success);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.kpi-trend.neutral { color: var(--text-mute); }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+.competency {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.competency-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.competency-percent { color: var(--text-mute); }
+
+.progress {
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  width: 0;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-fill.high { background: var(--success); }
+.progress-fill.med  { background: var(--accent); }
+.progress-fill.low  { background: var(--warning); }
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.activity-dot.blue { background: var(--accent); }
+.activity-dot.green { background: var(--success); }
+.activity-dot.violet { background: var(--violet); }
+.activity-dot.warning { background: var(--warning); }
+
+.activity-text { flex: 1; font-size: 13px; }
+.activity-date { color: var(--text-mute); font-size: 11px; }
+
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.rec-card {
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1px solid;
+}
+
+.rec-card.priority { background: var(--danger-soft); border-color: var(--danger); }
+.rec-card.continue { background: var(--success-soft); border-color: var(--success); }
+.rec-card.suggest  { background: var(--accent-soft); border-color: var(--accent); }
+
+[data-theme="dark"] .rec-card.priority { border-color: var(--danger); }
+[data-theme="dark"] .rec-card.continue { border-color: var(--success); }
+[data-theme="dark"] .rec-card.suggest  { border-color: var(--accent); }
+
+.rec-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  color: white;
+}
+.rec-card.priority .rec-tag { background: var(--danger); }
+.rec-card.continue .rec-tag { background: var(--success); }
+.rec-card.suggest  .rec-tag { background: var(--accent); }
+
+.rec-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+.rec-desc  { font-size: 12.5px; color: var(--text-soft); }
+
+/* ============ LESSONS ============ */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.filter-chip {
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: all 0.15s;
+  color: var(--text-soft);
+}
+
+.filter-chip:hover { background: var(--surface-2); }
+
+.filter-chip.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.lessons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.lesson-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  position: relative;
+  border-left: 3px solid var(--border);
+}
+
+.lesson-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.lesson-card.done {
+  border-left: 3px solid var(--success);
+}
+
+.lesson-emoji {
+  font-size: 26px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.lesson-title {
+  font-weight: 600;
+  font-size: 14.5px;
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.lesson-desc {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  margin-bottom: 14px;
+  min-height: 36px;
+}
+
+.lesson-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+
+.level-badge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.4px;
+}
+
+.level-B1 { background: var(--accent-soft); color: var(--accent); }
+.level-B2 { background: var(--warning-soft); color: var(--warning); }
+.level-C1 { background: var(--violet-soft); color: var(--violet); }
+
+.lesson-time {
+  color: var(--text-mute);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lesson-done-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--success);
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.category-tag {
+  font-size: 10.5px;
+  color: var(--text-mute);
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+/* ============ SIMULATION (CHAT) ============ */
+.scenario-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.scenario-tab {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-soft);
+  transition: all 0.15s;
+}
+
+.scenario-tab:hover { background: var(--surface-2); }
+
+.scenario-tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.chat-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+  height: calc(100vh - 220px);
+  min-height: 500px;
+}
+
+@media (max-width: 1100px) {
+  .chat-container { grid-template-columns: 1fr; height: auto; }
+}
+
+.chat-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.chat-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-header-info { flex: 1; }
+.chat-header-title { font-weight: 600; font-size: 14px; }
+.chat-header-desc { font-size: 12px; color: var(--text-mute); }
+
+.chat-messages {
+  flex: 1;
+  padding: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface-2);
+}
+
+.msg {
+  display: flex;
+  gap: 10px;
+  max-width: 78%;
+  animation: msgIn 0.25s ease;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+  color: white;
+}
+.msg.user .msg-avatar { background: var(--user-bubble); }
+.msg.ai .msg-avatar { background: var(--violet); }
+
+.msg-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.msg.ai .msg-bubble {
+  background: var(--ai-bubble);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+}
+
+.msg.user .msg-bubble {
+  background: var(--user-bubble);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.msg.system .msg-bubble {
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-radius: 10px;
+  font-style: italic;
+  font-size: 12.5px;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 4px;
+  padding: 12px 16px;
+  background: var(--ai-bubble);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+}
+
+.typing-dots span {
+  width: 7px;
+  height: 7px;
+  background: var(--text-mute);
+  border-radius: 50%;
+  animation: typing 1.3s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.85); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+.chat-input-bar {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: var(--surface);
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  resize: none;
+  font-size: 13.5px;
+  max-height: 120px;
+  min-height: 40px;
+  transition: border 0.15s;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.send-btn:hover:not(:disabled) { background: var(--accent-hover); }
+.send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: white;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+
+.btn-secondary {
+  padding: 8px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { background: var(--surface-2); color: var(--text); }
+
+.feedback-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  overflow-y: auto;
+}
+
+.feedback-empty {
+  color: var(--text-mute);
+  text-align: center;
+  padding: 40px 16px;
+  font-size: 13px;
+}
+
+.feedback-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.feedback-score-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+.feedback-score-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+
+.feedback-score-label {
+  font-size: 11px;
+  color: var(--text-mute);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.suggestions-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.suggestion-item {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* ============ VOCABULARY ============ */
+.vocab-tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  width: fit-content;
+  margin-bottom: 20px;
+}
+
+.vocab-tab {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-soft);
+  transition: all 0.15s;
+}
+
+.vocab-tab.active {
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.sets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.set-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.set-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.set-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.set-title {
+  font-weight: 600;
+  font-size: 14.5px;
+  margin-bottom: 6px;
+}
+
+.set-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-mute);
+}
+
+/* Flashcard */
+.flashcard-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.flashcard {
+  width: min(100%, 480px);
+  height: 280px;
+  perspective: 1000px;
+  margin-bottom: 24px;
+}
+
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+  cursor: pointer;
+}
+
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: var(--accent-soft);
+}
+
+.flashcard-word {
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+
+.flashcard-phonetic {
+  font-size: 16px;
+  color: var(--text-mute);
+  font-style: italic;
+}
+
+.flashcard-hint {
+  position: absolute;
+  bottom: 16px;
+  font-size: 11px;
+  color: var(--text-mute);
+}
+
+.flashcard-translation {
+  font-size: clamp(22px, 2.4vw, 26px);
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.flashcard-example {
+  font-size: 14px;
+  color: var(--text-soft);
+  font-style: italic;
+  line-height: 1.5;
+  max-width: 80%;
+}
+
+.flashcard-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.flashcard-nav-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.flashcard-nav-btn:hover:not(:disabled) {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.flashcard-nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.flashcard-counter {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-soft);
+  min-width: 48px;
+  text-align: center;
+}
+
+/* Quiz */
+.quiz-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.quiz-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.quiz-question {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.quiz-question-text {
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-weight: 500;
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quiz-option {
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.quiz-option:hover:not(.locked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.quiz-option.correct {
+  background: var(--success-soft);
+  border-color: var(--success);
+  color: var(--success);
+  font-weight: 500;
+}
+
+.quiz-option.wrong {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.quiz-hint {
+  margin-top: 18px;
+  padding: 14px;
+  background: var(--surface-2);
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--text-soft);
+  border-left: 3px solid var(--accent);
+}
+
+.quiz-actions { margin-top: 18px; text-align: right; }
+
+.quiz-result {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px;
+  text-align: center;
+}
+
+.quiz-result-score {
+  font-size: 54px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -2px;
+}
+
+.quiz-result-label { color: var(--text-soft); margin: 8px 0 18px; }
+
+/* ============ PROGRESS ============ */
+.charts-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1024px) {
+  .charts-row { grid-template-columns: 1fr; }
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 260px;
+  margin-top: 12px;
+}
+
+.competencies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.competency-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.competency-card-label {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.competency-card-value {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.errors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.error-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.error-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.error-count {
+  font-size: 12px;
+  color: var(--text-mute);
+  min-width: 60px;
+  text-align: right;
+}
+
+.error-bar {
+  flex: 2;
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.error-bar-fill {
+  height: 100%;
+  background: var(--warning);
+  border-radius: 999px;
+}
+
+/* ============ TRAINER PANEL ============ */
+.employee-table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+
+.employee-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employee-table th {
+  background: var(--surface-2);
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-mute);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.employee-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+}
+
+.employee-table tr:last-child td { border-bottom: none; }
+.employee-table tr:hover td { background: var(--surface-2); }
+
+.employee-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.employee-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.mini-progress {
+  width: 80px;
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.mini-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.status-active { background: var(--success-soft); color: var(--success); }
+.status-inactive { background: var(--surface-2); color: var(--text-mute); }
+
+.trainer-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 18px;
+}
+
+@media (max-width: 1024px) {
+  .trainer-grid { grid-template-columns: 1fr; }
+}
+
+.assign-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-soft);
+  margin-bottom: 6px;
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13.5px;
+  color: var(--text);
+  transition: border 0.15s;
+}
+
+.form-input:focus, .form-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--text);
+  color: var(--surface);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toast.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.visible { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 460px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.modal-desc {
+  font-size: 13px;
+  color: var(--text-soft);
+  margin-bottom: 18px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .app {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .sidebar-header { padding: 14px; justify-content: center; }
+  .brand { display: none; }
+  .nav-item { justify-content: center; padding: 10px 4px; }
+  .nav-item span { display: none; }
+  .nav-group-label { display: none; }
+  .sidebar-user .user-info { display: none; }
+  .sidebar-user { justify-content: center; padding: 14px; }
+
+  .topbar { padding: 0 16px; gap: 8px; }
+  .topbar-badge.streak { display: none; }
+  .topbar-title { font-size: 14px; }
+  .main { padding: 18px; }
+}
+
+@media (max-width: 480px) {
+  .topbar-badge.ai-active span { display: none; }
+  .text-btn { padding: 6px 10px; font-size: 11px; }
+  .chat-container { height: auto; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-mute); }
+</style>
+</head>
+<body>
+
+<!-- ============ APP ============ -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <svg class="logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" rx="9" fill="#1e6fbf"/>
+        <path d="M9 23V13H11.5V20.8H16.5V23H9Z" fill="white"/>
+        <path d="M19 23V13H26.5V15.2H21.5V16.8H25.5V19H21.5V20.8H26.5V23H19Z" fill="white"/>
+        <circle cx="28" cy="9.5" r="2" fill="white" opacity="0.85"/>
+      </svg>
+      <div class="brand">
+        <span class="brand-name">LinguaWork AI</span>
+        <span class="brand-tag">Business English</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-group-label">Główne</div>
+      <button class="nav-item active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-view="lessons">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Lekcje</span>
+      </button>
+      <button class="nav-item" data-view="simulation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Symulacja AI</span>
+      </button>
+      <button class="nav-item" data-view="vocabulary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Słownictwo</span>
+      </button>
+
+      <div class="nav-group-label">Analityka</div>
+      <button class="nav-item" data-view="progress">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Postępy</span>
+      </button>
+      <button class="nav-item" data-view="trainer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Panel trenera</span>
+      </button>
+    </nav>
+    <div class="sidebar-user">
+      <div class="user-avatar">JK</div>
+      <div class="user-info">
+        <div class="user-name">Jan Kowalski</div>
+        <div class="user-role">Specjalista · B1→B2</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <h1 class="topbar-title" id="topbarTitle">Dashboard</h1>
+    <span class="topbar-badge streak" id="streakBadge">🔥 0 dni z rzędu</span>
+    <span class="topbar-badge ai-active">✅ <span>Gemini AI aktywne</span></span>
+    <button class="text-btn" id="changeKeyBtn">Zmień klucz</button>
+    <button class="icon-btn" id="themeToggle" title="Przełącz motyw">
+      <svg id="themeIconLight" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg id="themeIconDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="view active" id="view-dashboard">
+      <div class="greeting">
+        <h2>Witaj z powrotem, Jan 👋</h2>
+        <p>Twój plan na dziś: lekcja „Prezentacja wyników kwartalnych" + 15 min ćwiczeń słownictwa.</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Poziom językowy</div>
+          <div class="kpi-value">B1 → B2</div>
+          <div class="kpi-trend">↗ 72% do celu</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Ukończone lekcje</div>
+          <div class="kpi-value" id="kpiLessons">0</div>
+          <div class="kpi-trend" id="kpiLessonsTrend">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Sesje AI</div>
+          <div class="kpi-value" id="kpiSessions">0</div>
+          <div class="kpi-trend" id="kpiSessionsTrend">—</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Nowe słownictwo</div>
+          <div class="kpi-value" id="kpiWords">0</div>
+          <div class="kpi-trend" id="kpiWordsTrend">—</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3 class="section-title">Kompetencje językowe</h3>
+          <p class="section-subtitle">Twój postęp w pięciu obszarach Business English</p>
+          <div class="competency">
+            <div class="competency-head"><span>Komunikacja pisemna</span><span class="competency-percent">82%</span></div>
+            <div class="progress"><div class="progress-fill high" data-width="82"></div></div>
+          </div>
+          <div class="competency">
+            <div class="competency-head"><span>Rozmowy zawodowe</span><span class="competency-percent">71%</span></div>
+            <div class="progress"><div class="progress-fill med" data-width="71"></div></div>
+          </div>
+          <div class="competency">
+            <div class="competency-head"><span>Słownictwo biznesowe</span><span class="competency-percent">65%</span></div>
+            <div class="progress"><div class="progress-fill med" data-width="65"></div></div>
+          </div>
+          <div class="competency">
+            <div class="competency-head"><span>Gramatyka</span><span class="competency-percent">88%</span></div>
+            <div class="progress"><div class="progress-fill high" data-width="88"></div></div>
+          </div>
+          <div class="competency">
+            <div class="competency-head"><span>Prezentacje</span><span class="competency-percent">59%</span></div>
+            <div class="progress"><div class="progress-fill low" data-width="59"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Ostatnia aktywność</h3>
+          <p class="section-subtitle">Twoje najnowsze działania w aplikacji</p>
+          <div id="activityFeed">
+            <div class="activity-item">
+              <span class="activity-dot blue"></span>
+              <div class="activity-text">
+                <div>Witaj w LinguaWork AI! Zacznij pierwszą sesję.</div>
+                <div class="activity-date">Dziś</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:22px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <h3 class="section-title" style="margin-bottom:0;">Historia sesji AI</h3>
+          <button class="text-btn" style="font-size:11px;color:var(--danger);" onclick="confirmReset()">🗑 Resetuj dane</button>
+        </div>
+        <p class="section-subtitle">Twoje ostatnie 5 sesji z asystentem AI</p>
+        <div id="sessionHistoryList"><div style="color:var(--text-mute);font-size:13px;padding:12px 0;">Brak zapisanych sesji. Przeprowadź rozmowę i kliknij „Zakończ i oceń".</div></div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Rekomendacje AI</h3>
+        <p class="section-subtitle">Spersonalizowane sugestie oparte na Twoich danych</p>
+        <div class="rec-grid">
+          <div class="rec-card priority">
+            <span class="rec-tag">Priorytet</span>
+            <div class="rec-title">Skup się na prezentacjach</div>
+            <div class="rec-desc">To Twój najsłabszy obszar (59%). Zacznij od lekcji „Prezentacja wyników kwartalnych".</div>
+          </div>
+          <div class="rec-card continue">
+            <span class="rec-tag">Kontynuuj</span>
+            <div class="rec-title">Świetny postęp w mailach</div>
+            <div class="rec-desc">Komunikacja pisemna na poziomie 82%. Spróbuj zaawansowanej korespondencji formalnej.</div>
+          </div>
+          <div class="rec-card suggest">
+            <span class="rec-tag">Sugestia</span>
+            <div class="rec-title">Słownictwo negocjacyjne</div>
+            <div class="rec-desc">Awans na B2 wymaga 30 nowych słów z obszaru negocjacji. Otwórz zestaw fiszek.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LESSONS ============ -->
+    <section class="view" id="view-lessons">
+      <div class="greeting">
+        <h2>Biblioteka lekcji</h2>
+        <p>Wybierz lekcję dopasowaną do Twojego poziomu i obszaru rozwoju.</p>
+      </div>
+
+      <div class="filter-bar" id="lessonFilters">
+        <button class="filter-chip active" data-cat="all">Wszystkie</button>
+        <button class="filter-chip" data-cat="Komunikacja">Komunikacja</button>
+        <button class="filter-chip" data-cat="Spotkania">Spotkania</button>
+        <button class="filter-chip" data-cat="Negocjacje">Negocjacje</button>
+        <button class="filter-chip" data-cat="Prezentacje">Prezentacje</button>
+      </div>
+
+      <div class="lessons-grid" id="lessonsGrid"></div>
+    </section>
+
+    <!-- ============ SIMULATION ============ -->
+    <section class="view" id="view-simulation">
+      <div class="greeting">
+        <h2>Symulacja rozmowy z AI</h2>
+        <p>Praktyka prawdziwych biznesowych scenariuszy. AI dostosuje się do Twoich odpowiedzi w czasie rzeczywistym.</p>
+      </div>
+
+      <div class="scenario-tabs" id="scenarioTabs"></div>
+
+      <div class="chat-container">
+        <div class="chat-panel">
+          <div class="chat-header">
+            <div class="msg-avatar" style="background: var(--violet);">AI</div>
+            <div class="chat-header-info">
+              <div class="chat-header-title" id="chatTitle">Rozmowa z klientem</div>
+              <div class="chat-header-desc" id="chatDesc">Obsługa klienta po angielsku — rozmowa o produkcie</div>
+            </div>
+            <button class="btn-secondary" id="newSessionBtn">↻ Nowa sesja</button>
+            <button class="btn-primary" id="endSessionBtn">Zakończ i oceń</button>
+          </div>
+          <div class="chat-messages" id="chatMessages"></div>
+          <div class="chat-input-bar">
+            <textarea class="chat-input" id="chatInput" placeholder="Wpisz wiadomość po angielsku... (Shift+Enter = nowa linia)" rows="1"></textarea>
+            <button class="send-btn" id="sendBtn" title="Wyślij">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <aside class="feedback-panel" id="feedbackPanel">
+          <h3 class="section-title">Ocena rozmowy</h3>
+          <p class="section-subtitle">Zakończ sesję, aby otrzymać analizę AI</p>
+          <div class="feedback-empty" id="feedbackEmpty">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.4;margin-bottom:12px;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            <div>Po zakończeniu rozmowy otrzymasz tu szczegółową ocenę i sugestie ulepszeń.</div>
+          </div>
+          <div id="feedbackContent" style="display:none;"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============ VOCABULARY ============ -->
+    <section class="view" id="view-vocabulary">
+      <div class="greeting">
+        <h2>Słownictwo branżowe</h2>
+        <p>Buduj zasób wyrazów potrzebnych w pracy zawodowej.</p>
+      </div>
+
+      <div class="vocab-tabs">
+        <button class="vocab-tab active" data-mode="sets">Zestawy</button>
+        <button class="vocab-tab" data-mode="flashcards">Fiszki</button>
+        <button class="vocab-tab" data-mode="quiz">Quiz</button>
+      </div>
+
+      <div id="vocab-sets" class="vocab-content">
+        <div class="sets-grid" id="setsGrid"></div>
+      </div>
+
+      <div id="vocab-flashcards" class="vocab-content" style="display:none;">
+        <div class="flashcard-area">
+          <div class="flashcard" id="flashcard">
+            <div class="flashcard-inner">
+              <div class="flashcard-face flashcard-front">
+                <div class="flashcard-word" id="flashcardWord">to negotiate</div>
+                <div class="flashcard-phonetic" id="flashcardPhonetic">/nɪˈɡoʊʃieɪt/</div>
+                <div class="flashcard-hint">Kliknij, aby zobaczyć tłumaczenie</div>
+              </div>
+              <div class="flashcard-face flashcard-back">
+                <div class="flashcard-translation" id="flashcardTranslation">negocjować</div>
+                <div class="flashcard-example" id="flashcardExample">"We need to negotiate better payment terms with the supplier."</div>
+                <div class="flashcard-hint">Kliknij, aby wrócić</div>
+              </div>
+            </div>
+          </div>
+          <div class="flashcard-nav">
+            <button class="flashcard-nav-btn" id="prevFlashcard" title="Poprzednia">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="flashcard-counter" id="flashcardCounter">1 / 8</div>
+            <button class="flashcard-nav-btn" id="nextFlashcard" title="Następna">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="vocab-quiz" class="vocab-content" style="display:none;">
+        <div class="quiz-container" id="quizContainer"></div>
+      </div>
+    </section>
+
+    <!-- ============ PROGRESS ============ -->
+    <section class="view" id="view-progress">
+      <div class="greeting">
+        <h2>Twoje postępy</h2>
+        <p>Szczegółowa analityka Twojej nauki języka.</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Czas nauki</div><div class="kpi-value" id="progHours">0h</div><div class="kpi-trend">szac. na podst. aktywności</div></div>
+        <div class="kpi"><div class="kpi-label">Średni wynik sesji</div><div class="kpi-value" id="progAvgScore">—</div><div class="kpi-trend" id="progAvgTrend">brak sesji</div></div>
+        <div class="kpi"><div class="kpi-label">Seria dni</div><div class="kpi-value" id="progStreak">0</div><div class="kpi-trend">🔥 dni z rzędu</div></div>
+        <div class="kpi"><div class="kpi-label">Aktywne słowa</div><div class="kpi-value" id="progWords">0</div><div class="kpi-trend" id="progWordsTrend">—</div></div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <h3 class="section-title">Wyniki sesji AI</h3>
+          <p class="section-subtitle" id="weeklyChartDesc">Twoje ostatnie sesje z asystentem</p>
+          <div class="chart-wrapper"><canvas id="weeklyChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h3 class="section-title">Rozkład aktywności</h3>
+          <p class="section-subtitle">Jak dzielisz swój czas nauki</p>
+          <div class="chart-wrapper"><canvas id="donutChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 class="section-title">Kompetencje szczegółowe</h3>
+        <p class="section-subtitle">Twoje wyniki w pięciu kluczowych obszarach</p>
+        <div class="competencies-grid">
+          <div class="competency-card">
+            <div class="competency-card-label">Speaking</div>
+            <div class="competency-card-value" style="color:var(--accent);">71%</div>
+            <div class="progress"><div class="progress-fill med" data-width="71"></div></div>
+          </div>
+          <div class="competency-card">
+            <div class="competency-card-label">Writing</div>
+            <div class="competency-card-value" style="color:var(--success);">82%</div>
+            <div class="progress"><div class="progress-fill high" data-width="82"></div></div>
+          </div>
+          <div class="competency-card">
+            <div class="competency-card-label">Vocabulary</div>
+            <div class="competency-card-value" style="color:var(--warning);">65%</div>
+            <div class="progress"><div class="progress-fill low" data-width="65"></div></div>
+          </div>
+          <div class="competency-card">
+            <div class="competency-card-label">Grammar</div>
+            <div class="competency-card-value" style="color:var(--success);">88%</div>
+            <div class="progress"><div class="progress-fill high" data-width="88"></div></div>
+          </div>
+          <div class="competency-card">
+            <div class="competency-card-label">Business Comm.</div>
+            <div class="competency-card-value" style="color:var(--accent);">74%</div>
+            <div class="progress"><div class="progress-fill med" data-width="74"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Najczęstsze błędy</h3>
+        <p class="section-subtitle">Obszary wymagające szczególnej uwagi</p>
+        <div class="errors-list">
+          <div class="error-item">
+            <span class="error-name">Present Perfect vs Simple Past</span>
+            <div class="error-bar"><div class="error-bar-fill" style="width:85%"></div></div>
+            <span class="error-count">17 błędów</span>
+          </div>
+          <div class="error-item">
+            <span class="error-name">Przedimki (a / an / the)</span>
+            <div class="error-bar"><div class="error-bar-fill" style="width:60%"></div></div>
+            <span class="error-count">12 błędów</span>
+          </div>
+          <div class="error-item">
+            <span class="error-name">Conditional II (would + V)</span>
+            <div class="error-bar"><div class="error-bar-fill" style="width:40%"></div></div>
+            <span class="error-count">8 błędów</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRAINER PANEL ============ -->
+    <section class="view" id="view-trainer">
+      <div class="greeting">
+        <h2>Panel trenera</h2>
+        <p>Zarządzaj rozwojem językowym swojego zespołu.</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Aktywni pracownicy</div><div class="kpi-value">12</div><div class="kpi-trend">+2 w tym miesiącu</div></div>
+        <div class="kpi"><div class="kpi-label">Średni postęp grupy</div><div class="kpi-value">74%</div><div class="kpi-trend">+6% kw/kw</div></div>
+        <div class="kpi"><div class="kpi-label">Sesje AI · 30 dni</div><div class="kpi-value">186</div><div class="kpi-trend">+22%</div></div>
+        <div class="kpi"><div class="kpi-label">Aktywność tyg.</div><div class="kpi-value">89%</div><div class="kpi-trend neutral">stabilna</div></div>
+      </div>
+
+      <div class="employee-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Pracownik</th>
+              <th>Poziom</th>
+              <th>Sesje</th>
+              <th>Wynik</th>
+              <th>Postęp</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="employeeTbody"></tbody>
+        </table>
+      </div>
+
+      <div class="trainer-grid">
+        <div class="card">
+          <h3 class="section-title">Przypisz scenariusz</h3>
+          <p class="section-subtitle">Wybierz pracownika, scenariusz oraz termin realizacji</p>
+          <form class="assign-form" id="assignForm" onsubmit="return false;">
+            <div class="form-group">
+              <label>Pracownik</label>
+              <select class="form-select" id="assignEmployee">
+                <option>Anna Kowalska</option>
+                <option>Marek Nowak</option>
+                <option>Katarzyna Wójcik</option>
+                <option>Piotr Zając</option>
+                <option>Agnieszka Lewandowska</option>
+                <option>Tomasz Wiśniewski</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Scenariusz</label>
+              <select class="form-select" id="assignScenario">
+                <option>Rozmowa z klientem</option>
+                <option>Rozmowa rekrutacyjna</option>
+                <option>Meeting zespołowy</option>
+                <option>Prezentacja projektu</option>
+                <option>Negocjacje kontraktu</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Termin realizacji</label>
+              <input type="date" class="form-input" id="assignDate" value="2026-05-25">
+            </div>
+            <button class="btn-primary" id="assignBtn" style="align-self:flex-start;">Przypisz zadanie</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3 class="section-title">Najczęstsze trudności w zespole</h3>
+          <p class="section-subtitle">Obszary wymagające uwagi trenera</p>
+          <div class="errors-list">
+            <div class="error-item"><span class="error-name">Prezentacja danych liczbowych</span><div class="error-bar"><div class="error-bar-fill" style="width:88%"></div></div><span class="error-count">88%</span></div>
+            <div class="error-item"><span class="error-name">Negocjowanie warunków</span><div class="error-bar"><div class="error-bar-fill" style="width:72%"></div></div><span class="error-count">72%</span></div>
+            <div class="error-item"><span class="error-name">Idiomy biznesowe</span><div class="error-bar"><div class="error-bar-fill" style="width:65%"></div></div><span class="error-count">65%</span></div>
+            <div class="error-item"><span class="error-name">Wymowa terminów branżowych</span><div class="error-bar"><div class="error-bar-fill" style="width:54%"></div></div><span class="error-count">54%</span></div>
+            <div class="error-item"><span class="error-name">Formalna korespondencja</span><div class="error-bar"><div class="error-bar-fill" style="width:42%"></div></div><span class="error-count">42%</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ MODAL: CHANGE KEY ============ -->
+<div class="modal-overlay" id="changeKeyModal">
+  <div class="modal">
+    <div class="modal-title">Zmień klucz API</div>
+    <div class="modal-desc">Wprowadź nowy klucz Google Gemini. Klucz nie jest zapisywany na dysku.</div>
+    <input type="password" class="form-input" id="newKeyInput" placeholder="AIza...">
+    <div class="splash-error" id="modalError" style="background:var(--danger-soft);border-color:var(--danger);color:var(--danger);">Nieprawidłowy klucz API.</div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="cancelKeyBtn">Anuluj</button>
+      <button class="btn-primary" id="saveKeyBtn">Zapisz</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastText">Zapisano</span>
+</div>
+
+<script>
+/* ============ STATE ============ */
+const state = {
+  apiKey: 'AIzaSyCElvtH-MvCJeF-0qYwbM6I1W56NxGRw6g',
+  scenario: 'client',
+  chatHistory: [],
+  isThinking: false,
+  flashcardIdx: 0,
+  flashcardFlipped: false,
+  quizIdx: 0,
+  quizScore: 0,
+  quizLocked: false,
+  filter: 'all'
+};
+
+/* ============ DATA ============ */
+const SCENARIOS = {
+  client: {
+    label: 'Rozmowa z klientem',
+    desc: 'Obsługa klienta po angielsku — rozmowa o produkcie',
+    system: "You are a customer calling a company to inquire about their software product. The user is the customer service representative. Ask about features, pricing, and delivery. Be polite but persistent. Keep your responses to 2-3 sentences. Start the conversation."
+  },
+  hr: {
+    label: 'Rozmowa rekrutacyjna',
+    desc: 'Rozmowa kwalifikacyjna na stanowisko managerskie',
+    system: "You are an HR recruiter conducting a job interview for a senior manager position at an international company. The user is the candidate. Ask professional questions about experience, leadership, and motivation. Keep responses to 2-3 sentences. Start the conversation."
+  },
+  meeting: {
+    label: 'Meeting zespołowy',
+    desc: 'Spotkanie statusowe projektu z członkiem zespołu',
+    system: "You are a team member in a project status meeting. The user is the team lead. Discuss project progress, raise concerns about timelines, ask for guidance. Keep responses natural and concise (2-3 sentences). Start the conversation."
+  },
+  presentation: {
+    label: 'Prezentacja projektu',
+    desc: 'Prezentacja przed zarządem — krytyczne pytania',
+    system: "You are a board member listening to a project presentation. The user is presenting. Ask critical questions about ROI, risks, and strategy. Be professional but demanding. Keep responses to 2-3 sentences. Start by asking the user to begin their presentation."
+  },
+  negotiation: {
+    label: 'Negocjacje kontraktu',
+    desc: 'Negocjacje warunków usługi z dostawcą',
+    system: "You are a supplier negotiating a service contract. The user is the client/buyer. Discuss pricing, payment terms, and service levels. Be professional but firm about your prices. Keep responses concise (2-3 sentences). Start the conversation by introducing your offer."
+  }
+};
+
+const LESSONS = [
+  { id: 1, emoji: '✉️', title: 'Formalny e-mail do klienta', desc: 'Naucz się pisać profesjonalne wiadomości handlowe.', level: 'B1', time: '20 min', cat: 'Komunikacja', done: true, scenario: 'client' },
+  { id: 2, emoji: '📞', title: 'Rozmowa telefoniczna z klientem', desc: 'Obsługa zapytań przez telefon — standardowe zwroty.', level: 'B1', time: '25 min', cat: 'Komunikacja', done: true, scenario: 'client' },
+  { id: 3, emoji: '🚀', title: 'Spotkanie kick-off projektu', desc: 'Rozpoczynanie projektu i ustalanie celów z zespołem.', level: 'B2', time: '30 min', cat: 'Spotkania', done: false, scenario: 'meeting' },
+  { id: 4, emoji: '📊', title: 'Prezentacja wyników kwartalnych', desc: 'Skuteczne komunikowanie wyników biznesowych.', level: 'B2', time: '35 min', cat: 'Prezentacje', done: false, scenario: 'presentation' },
+  { id: 5, emoji: '🤝', title: 'Negocjacje warunków kontraktu', desc: 'Twarda gra negocjacyjna — cena, warunki, SLA.', level: 'C1', time: '40 min', cat: 'Negocjacje', done: false, scenario: 'negotiation' },
+  { id: 6, emoji: '☕', title: 'Small talk w środowisku pracy', desc: 'Naturalne rozmowy z kolegami z międzynarodowych zespołów.', level: 'B1', time: '15 min', cat: 'Komunikacja', done: true, scenario: 'meeting' },
+  { id: 7, emoji: '💬', title: 'Meeting z feedbackiem', desc: 'Konstruktywne udzielanie i przyjmowanie informacji zwrotnej.', level: 'B2', time: '30 min', cat: 'Spotkania', done: false, scenario: 'meeting' },
+  { id: 8, emoji: '👋', title: 'Onboarding nowego pracownika', desc: 'Wprowadzanie nowych członków zespołu — kultura firmy.', level: 'B1', time: '25 min', cat: 'Komunikacja', done: false, scenario: 'meeting' }
+];
+
+const VOCAB_SETS = [
+  { icon: '🤝', title: 'Negocjacje', count: 30, level: 'B2' },
+  { icon: '📊', title: 'Prezentacje i raporty', count: 25, level: 'B1' },
+  { icon: '✉️', title: 'Korespondencja formalna', count: 40, level: 'B1' },
+  { icon: '📞', title: 'Telekonferencje', count: 20, level: 'B2' },
+  { icon: '👥', title: 'HR i rekrutacja', count: 35, level: 'C1' },
+  { icon: '💰', title: 'Finanse i budżet', count: 28, level: 'B2' }
+];
+
+const FLASHCARDS = [
+  { word: 'to negotiate', phonetic: '/nɪˈɡoʊʃieɪt/', translation: 'negocjować', example: '"We need to negotiate better payment terms with the supplier."' },
+  { word: 'stakeholder', phonetic: '/ˈsteɪkˌhoʊldər/', translation: 'interesariusz', example: '"All stakeholders should be involved in the decision-making process."' },
+  { word: 'to escalate', phonetic: '/ˈɛskəleɪt/', translation: 'eskalować, podnieść wyżej', example: '"We need to escalate this issue to the management team."' },
+  { word: 'deliverable', phonetic: '/dɪˈlɪvərəbl/', translation: 'rezultat, produkt projektu', example: '"The deliverables for this phase include a technical report and a prototype."' },
+  { word: 'to align', phonetic: '/əˈlaɪn/', translation: 'uzgodnić, dopasować', example: '"Let\'s align on the priorities for the next quarter."' },
+  { word: 'follow-up', phonetic: '/ˈfɒloʊˌʌp/', translation: 'działanie kontynuujące', example: '"I\'ll send a follow-up email with the meeting summary."' },
+  { word: 'bandwidth', phonetic: '/ˈbændˌwɪdθ/', translation: 'możliwości czasowe / zasoby', example: '"I don\'t have the bandwidth to take on a new project this month."' },
+  { word: 'to streamline', phonetic: '/ˈstriːmlaɪn/', translation: 'usprawnić, uprościć', example: '"We need to streamline our internal processes to reduce costs."' }
+];
+
+const QUIZ = [
+  { q: 'Jakie angielskie słowo oznacza „dostarczyć wyniki" w kontekście projektu?',
+    options: ['to deliver', 'to bring', 'to send', 'to give'],
+    correct: 0,
+    hint: '„To deliver results" to standardowy zwrot w angielskim biznesowym — oznacza dostarczyć/osiągnąć wyniki.' },
+  { q: 'Najbardziej formalne zakończenie e-maila biznesowego to:',
+    options: ['Cheers', 'Best regards', 'Talk soon', 'Bye'],
+    correct: 1,
+    hint: '„Best regards" lub „Kind regards" to standard formalnej korespondencji. „Cheers" jest bardzo nieformalne.' },
+  { q: 'Co oznacza zwrot „to table an issue" w brytyjskim angielskim?',
+    options: ['odłożyć temat na potem', 'omówić na spotkaniu', 'usunąć z agendy', 'zapisać w notatkach'],
+    correct: 1,
+    hint: 'W brytyjskim angielskim „to table" oznacza zgłosić do dyskusji — co jest pułapką dla Amerykanów, którzy używają tego dokładnie odwrotnie.' },
+  { q: 'Uzupełnij zdanie: „We need to ___ our priorities given the new constraints."',
+    options: ['revisit', 'visit again', 'go back', 'see again'],
+    correct: 0,
+    hint: '„To revisit" oznacza ponownie przeanalizować/zweryfikować coś — idealne w kontekście biznesowym.' },
+  { q: 'Zwrot „All things considered" na zakończenie prezentacji oznacza:',
+    options: ['wszystko zostało zrobione', 'biorąc wszystko pod uwagę', 'mamy wiele do zrobienia', 'rozważyliśmy wszystko'],
+    correct: 1,
+    hint: '„All things considered" = „biorąc wszystko pod uwagę / w sumie" — to klasyczna formuła podsumowująca prezentację.' }
+];
+
+const EMPLOYEES = [
+  { name: 'Anna Kowalska', initials: 'AK', level: 'B1→B2', sessions: 28, score: 78, active: true },
+  { name: 'Marek Nowak', initials: 'MN', level: 'A2→B1', sessions: 18, score: 65, active: true },
+  { name: 'Katarzyna Wójcik', initials: 'KW', level: 'B2→C1', sessions: 42, score: 88, active: true },
+  { name: 'Piotr Zając', initials: 'PZ', level: 'B1', sessions: 22, score: 70, active: true },
+  { name: 'Agnieszka Lewandowska', initials: 'AL', level: 'A2', sessions: 8, score: 55, active: false },
+  { name: 'Tomasz Wiśniewski', initials: 'TW', level: 'B2', sessions: 35, score: 83, active: true }
+];
+
+const VIEW_TITLES = {
+  dashboard: 'Dashboard',
+  lessons: 'Lekcje',
+  simulation: 'Symulacja AI',
+  vocabulary: 'Słownictwo branżowe',
+  progress: 'Postępy',
+  trainer: 'Panel trenera'
+};
+
+/* ============ GEMINI API ============ */
+const GEMINI_URL = (key) => `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+
+async function geminiTest(key) {
+  try {
+    const res = await fetch(GEMINI_URL(key), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: 'Reply with exactly: ok' }] }],
+        generationConfig: { maxOutputTokens: 50, temperature: 0 }
+      })
+    });
+    if (!res.ok) {
+      let errMsg = 'HTTP ' + res.status;
+      try {
+        const errData = await res.json();
+        if (errData.error && errData.error.message) errMsg = errData.error.message;
+      } catch (_) {}
+      return { ok: false, error: errMsg };
+    }
+    const data = await res.json();
+    if (data.candidates && data.candidates.length > 0) {
+      return { ok: true };
+    }
+    return { ok: false, error: 'Brak odpowiedzi z modelu' };
+  } catch (e) {
+    return { ok: false, error: 'Błąd sieci: ' + e.message };
+  }
+}
+
+async function geminiSend(systemPrompt, history, userMessage) {
+  const contents = [];
+  if (systemPrompt) {
+    contents.push({ role: 'user', parts: [{ text: 'SYSTEM INSTRUCTION: ' + systemPrompt }] });
+    contents.push({ role: 'model', parts: [{ text: 'Understood. I will follow these instructions.' }] });
+  }
+  for (const m of history) contents.push(m);
+  if (userMessage) contents.push({ role: 'user', parts: [{ text: userMessage }] });
+
+  const res = await fetch(GEMINI_URL(state.apiKey), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents,
+      generationConfig: {
+        maxOutputTokens: 800,
+        temperature: 0.8,
+        thinkingConfig: { thinkingBudget: 0 }
+      }
+    })
+  });
+  if (!res.ok) {
+    let detail = 'HTTP ' + res.status;
+    try {
+      const errData = await res.json();
+      if (errData.error && errData.error.message) detail = errData.error.message;
+    } catch (_) {}
+    throw new Error(detail);
+  }
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Pusta odpowiedź z modelu');
+  return text.trim();
+}
+
+async function geminiRaw(prompt) {
+  const res = await fetch(GEMINI_URL(state.apiKey), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        maxOutputTokens: 1500,
+        temperature: 0.3,
+        thinkingConfig: { thinkingBudget: 0 }
+      }
+    })
+  });
+  if (!res.ok) {
+    let detail = 'HTTP ' + res.status;
+    try {
+      const errData = await res.json();
+      if (errData.error && errData.error.message) detail = errData.error.message;
+    } catch (_) {}
+    throw new Error(detail);
+  }
+  const data = await res.json();
+  return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+/* ============ SPLASH (usunięty — klucz wbudowany w kod) ============ */
+
+/* ============ THEME ============ */
+const themeToggle = document.getElementById('themeToggle');
+const themeIconLight = document.getElementById('themeIconLight');
+const themeIconDark = document.getElementById('themeIconDark');
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeIconLight.style.display = 'none';
+    themeIconDark.style.display = 'block';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    themeIconLight.style.display = 'block';
+    themeIconDark.style.display = 'none';
+  }
+}
+
+const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(prefersDark ? 'dark' : 'light');
+
+themeToggle.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+  if (window._charts) {
+    Object.values(window._charts).forEach(c => c && c.destroy());
+    window._charts = {};
+    if (document.getElementById('view-progress').classList.contains('active')) initCharts();
+  }
+});
+
+/* ============ NAVIGATION ============ */
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => switchView(item.dataset.view));
+});
+
+function switchView(viewName) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === viewName));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + viewName));
+  document.getElementById('topbarTitle').textContent = VIEW_TITLES[viewName];
+  animateProgressBars();
+  if (viewName === 'progress') setTimeout(initCharts, 50);
+}
+
+function animateProgressBars() {
+  setTimeout(() => {
+    document.querySelectorAll('.progress-fill').forEach(fill => {
+      const w = fill.dataset.width;
+      if (w) fill.style.width = w + '%';
+    });
+  }, 60);
+}
+
+/* ============ MODAL: CHANGE KEY ============ */
+const changeKeyBtn = document.getElementById('changeKeyBtn');
+const changeKeyModal = document.getElementById('changeKeyModal');
+const newKeyInput = document.getElementById('newKeyInput');
+const modalError = document.getElementById('modalError');
+const cancelKeyBtn = document.getElementById('cancelKeyBtn');
+const saveKeyBtn = document.getElementById('saveKeyBtn');
+
+changeKeyBtn.addEventListener('click', () => {
+  newKeyInput.value = '';
+  modalError.classList.remove('visible');
+  changeKeyModal.classList.add('visible');
+  setTimeout(() => newKeyInput.focus(), 50);
+});
+
+cancelKeyBtn.addEventListener('click', () => changeKeyModal.classList.remove('visible'));
+
+saveKeyBtn.addEventListener('click', async () => {
+  const k = newKeyInput.value.trim();
+  if (!k) return;
+  saveKeyBtn.disabled = true;
+  saveKeyBtn.textContent = 'Sprawdzanie...';
+  modalError.classList.remove('visible');
+  const result = await geminiTest(k);
+  if (result.ok) {
+    state.apiKey = k;
+    changeKeyModal.classList.remove('visible');
+    showToast('Klucz API zaktualizowany');
+  } else {
+    modalError.textContent = 'Nieprawidłowy klucz API. ' + (result.error || '');
+    modalError.classList.add('visible');
+  }
+  saveKeyBtn.disabled = false;
+  saveKeyBtn.textContent = 'Zapisz';
+});
+
+changeKeyModal.addEventListener('click', (e) => {
+  if (e.target === changeKeyModal) changeKeyModal.classList.remove('visible');
+});
+
+/* ============ TOAST ============ */
+const toast = document.getElementById('toast');
+const toastText = document.getElementById('toastText');
+function showToast(msg) {
+  toastText.textContent = msg;
+  toast.classList.add('visible');
+  clearTimeout(window._toastTO);
+  window._toastTO = setTimeout(() => toast.classList.remove('visible'), 2800);
+}
+
+/* ============ LESSONS ============ */
+function renderLessons() {
+  const grid = document.getElementById('lessonsGrid');
+  const doneFrStorage = loadStorage().lessonsDone || [];
+  const items = state.filter === 'all' ? LESSONS : LESSONS.filter(l => l.cat === state.filter);
+  grid.innerHTML = items.map(l => {
+    const isDone = doneFrStorage.includes(l.id);
+    return `
+    <div class="lesson-card ${isDone ? 'done' : ''}" data-id="${l.id}">
+      <span class="lesson-emoji">${l.emoji}</span>
+      <div class="lesson-title">${l.title}</div>
+      <div class="lesson-desc">${l.desc}</div>
+      <div class="lesson-meta">
+        <span class="level-badge level-${l.level}">${l.level}</span>
+        <span class="lesson-time">⏱ ${l.time}</span>
+        <span class="category-tag">${l.cat}</span>
+        ${isDone ? '<span class="lesson-done-badge">✓ Ukończono</span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+  grid.querySelectorAll('.lesson-card').forEach(c => {
+    c.addEventListener('click', () => {
+      const id = parseInt(c.dataset.id);
+      const lesson = LESSONS.find(x => x.id === id);
+      if (lesson) {
+        const isNew = markLessonDone(id);
+        switchView('simulation');
+        selectScenario(lesson.scenario);
+        showToast((isNew ? '✅ Lekcja oznaczona jako ukończona! ' : '') + 'Scenariusz: ' + SCENARIOS[lesson.scenario].label);
+        renderLessons();
+      }
+    });
+  });
+}
+
+document.getElementById('lessonFilters').addEventListener('click', (e) => {
+  if (e.target.classList.contains('filter-chip')) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    e.target.classList.add('active');
+    state.filter = e.target.dataset.cat;
+    renderLessons();
+  }
+});
+
+/* ============ SIMULATION ============ */
+const scenarioTabs = document.getElementById('scenarioTabs');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatTitle = document.getElementById('chatTitle');
+const chatDesc = document.getElementById('chatDesc');
+
+function renderScenarioTabs() {
+  scenarioTabs.innerHTML = Object.entries(SCENARIOS).map(([k, s]) => `
+    <button class="scenario-tab ${k === state.scenario ? 'active' : ''}" data-scenario="${k}">${s.label}</button>
+  `).join('');
+  scenarioTabs.querySelectorAll('.scenario-tab').forEach(t => {
+    t.addEventListener('click', () => selectScenario(t.dataset.scenario));
+  });
+}
+
+function selectScenario(key) {
+  state.scenario = key;
+  state.chatHistory = [];
+  document.querySelectorAll('.scenario-tab').forEach(t => t.classList.toggle('active', t.dataset.scenario === key));
+  chatTitle.textContent = SCENARIOS[key].label;
+  chatDesc.textContent = SCENARIOS[key].desc;
+  chatMessages.innerHTML = '';
+  hideFeedback();
+  startScenarioConversation();
+}
+
+async function startScenarioConversation() {
+  showTyping();
+  try {
+    const aiText = await geminiSend(SCENARIOS[state.scenario].system, []);
+    hideTyping();
+    state.chatHistory.push({ role: 'model', parts: [{ text: aiText }] });
+    addMessage('ai', aiText);
+  } catch (e) {
+    hideTyping();
+    addMessage('system', 'Błąd połączenia z AI: ' + e.message);
+  }
+}
+
+function addMessage(role, text) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  const avatar = role === 'user' ? 'TY' : (role === 'ai' ? 'AI' : '!');
+  div.innerHTML = `
+    <div class="msg-avatar">${avatar}</div>
+    <div class="msg-bubble">${escapeHtml(text)}</div>
+  `;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showTyping() {
+  state.isThinking = true;
+  sendBtn.disabled = true;
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typingMsg';
+  div.innerHTML = `
+    <div class="msg-avatar">AI</div>
+    <div class="typing-dots"><span></span><span></span><span></span></div>
+  `;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function hideTyping() {
+  state.isThinking = false;
+  sendBtn.disabled = false;
+  const el = document.getElementById('typingMsg');
+  if (el) el.remove();
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+async function sendUserMessage() {
+  const text = chatInput.value.trim();
+  if (!text || state.isThinking) return;
+  addMessage('user', text);
+  chatInput.value = '';
+  autoResize();
+  showTyping();
+  try {
+    const aiText = await geminiSend(SCENARIOS[state.scenario].system, state.chatHistory, text);
+    state.chatHistory.push({ role: 'user', parts: [{ text }] });
+    state.chatHistory.push({ role: 'model', parts: [{ text: aiText }] });
+    hideTyping();
+    addMessage('ai', aiText);
+  } catch (e) {
+    hideTyping();
+    addMessage('system', 'Błąd połączenia z AI: ' + e.message);
+  }
+}
+
+sendBtn.addEventListener('click', sendUserMessage);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendUserMessage();
+  }
+});
+
+function autoResize() {
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+}
+chatInput.addEventListener('input', autoResize);
+
+document.getElementById('newSessionBtn').addEventListener('click', () => {
+  state.chatHistory = [];
+  chatMessages.innerHTML = '';
+  hideFeedback();
+  startScenarioConversation();
+});
+
+document.getElementById('endSessionBtn').addEventListener('click', endAndEvaluate);
+
+async function endAndEvaluate() {
+  if (state.chatHistory.length < 2) {
+    showToast('Najpierw przeprowadź rozmowę.');
+    return;
+  }
+  showFeedbackLoading();
+  const transcript = state.chatHistory.map(m => {
+    const who = m.role === 'user' ? 'USER' : 'AI';
+    return `${who}: ${m.parts[0].text}`;
+  }).join('\n');
+
+  const prompt = `Analyze this business English conversation and return ONLY a valid JSON object (no markdown, no code fences) with these keys:
+- grammar_score (integer 0-100)
+- vocabulary_score (integer 0-100)
+- formality_score (integer 0-100)
+- communication_score (integer 0-100)
+- suggestions (array of exactly 3 strings with specific improvement tips IN POLISH)
+
+Conversation:
+${transcript}
+
+Return ONLY the JSON object.`;
+
+  try {
+    let raw = await geminiRaw(prompt);
+    raw = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const firstBrace = raw.indexOf('{');
+    const lastBrace = raw.lastIndexOf('}');
+    if (firstBrace >= 0 && lastBrace > firstBrace) raw = raw.slice(firstBrace, lastBrace + 1);
+    const parsed = JSON.parse(raw);
+    renderFeedback(parsed);
+    addSession(parsed);
+  } catch (e) {
+    renderFeedbackRaw('Nie udało się sparsować odpowiedzi. Odpowiedź AI: ' + e.message);
+  }
+}
+
+function showFeedbackLoading() {
+  document.getElementById('feedbackEmpty').style.display = 'none';
+  const c = document.getElementById('feedbackContent');
+  c.style.display = 'block';
+  c.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text-mute);">
+    <div class="typing-dots" style="display:inline-flex;margin-bottom:14px;"><span></span><span></span><span></span></div>
+    <div style="font-size:13px;">Analiza rozmowy przez AI...</div>
+  </div>`;
+}
+
+function renderFeedback(d) {
+  const c = document.getElementById('feedbackContent');
+  c.innerHTML = `
+    <div class="feedback-scores">
+      <div class="feedback-score-card">
+        <div class="feedback-score-value">${d.grammar_score}%</div>
+        <div class="feedback-score-label">Gramatyka</div>
+      </div>
+      <div class="feedback-score-card">
+        <div class="feedback-score-value">${d.vocabulary_score}%</div>
+        <div class="feedback-score-label">Słownictwo</div>
+      </div>
+      <div class="feedback-score-card">
+        <div class="feedback-score-value">${d.formality_score}%</div>
+        <div class="feedback-score-label">Formalność</div>
+      </div>
+      <div class="feedback-score-card">
+        <div class="feedback-score-value">${d.communication_score}%</div>
+        <div class="feedback-score-label">Komunikacja</div>
+      </div>
+    </div>
+    <h4 style="font-size:13px;font-weight:600;margin-bottom:10px;">Sugestie ulepszeń</h4>
+    <ul class="suggestions-list">
+      ${(d.suggestions || []).map(s => `<li class="suggestion-item">${escapeHtml(s)}</li>`).join('')}
+    </ul>
+  `;
+}
+
+function renderFeedbackRaw(text) {
+  const c = document.getElementById('feedbackContent');
+  c.innerHTML = `<div style="white-space:pre-wrap;font-size:12.5px;color:var(--text-soft);line-height:1.6;">${escapeHtml(text)}</div>`;
+}
+
+function hideFeedback() {
+  document.getElementById('feedbackEmpty').style.display = 'block';
+  document.getElementById('feedbackContent').style.display = 'none';
+}
+
+/* ============ VOCABULARY ============ */
+document.querySelectorAll('.vocab-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.vocab-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const mode = t.dataset.mode;
+    document.querySelectorAll('.vocab-content').forEach(c => c.style.display = 'none');
+    document.getElementById('vocab-' + mode).style.display = 'block';
+    if (mode === 'quiz') renderQuiz();
+  });
+});
+
+function renderVocabSets() {
+  document.getElementById('setsGrid').innerHTML = VOCAB_SETS.map(s => `
+    <div class="set-card" data-title="${s.title}">
+      <div class="set-icon">${s.icon}</div>
+      <div class="set-title">${s.title}</div>
+      <div class="set-meta">
+        <span class="level-badge level-${s.level}">${s.level}</span>
+        <span>${s.count} słów</span>
+      </div>
+    </div>
+  `).join('');
+  document.querySelectorAll('.set-card').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.vocab-tab').forEach(x => x.classList.remove('active'));
+      document.querySelector('.vocab-tab[data-mode="flashcards"]').classList.add('active');
+      document.querySelectorAll('.vocab-content').forEach(x => x.style.display = 'none');
+      document.getElementById('vocab-flashcards').style.display = 'block';
+      showToast('Otwarto zestaw: ' + c.dataset.title);
+    });
+  });
+}
+
+/* Flashcards */
+const flashcard = document.getElementById('flashcard');
+flashcard.addEventListener('click', () => {
+  state.flashcardFlipped = !state.flashcardFlipped;
+  flashcard.classList.toggle('flipped', state.flashcardFlipped);
+});
+
+function updateFlashcard() {
+  const f = FLASHCARDS[state.flashcardIdx];
+  document.getElementById('flashcardWord').textContent = f.word;
+  document.getElementById('flashcardPhonetic').textContent = f.phonetic;
+  document.getElementById('flashcardTranslation').textContent = f.translation;
+  document.getElementById('flashcardExample').textContent = f.example;
+  document.getElementById('flashcardCounter').textContent = `${state.flashcardIdx + 1} / ${FLASHCARDS.length}`;
+  state.flashcardFlipped = false;
+  flashcard.classList.remove('flipped');
+  document.getElementById('prevFlashcard').disabled = state.flashcardIdx === 0;
+  document.getElementById('nextFlashcard').disabled = state.flashcardIdx === FLASHCARDS.length - 1;
+}
+
+document.getElementById('prevFlashcard').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (state.flashcardIdx > 0) { state.flashcardIdx--; updateFlashcard(); }
+});
+document.getElementById('nextFlashcard').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (state.flashcardIdx < FLASHCARDS.length - 1) { state.flashcardIdx++; updateFlashcard(); trackFlashcard(); }
+});
+
+/* Quiz */
+function renderQuiz() {
+  const c = document.getElementById('quizContainer');
+  if (state.quizIdx >= QUIZ.length) {
+    c.innerHTML = `
+      <div class="quiz-result">
+        <div class="quiz-result-score">${state.quizScore} / ${QUIZ.length}</div>
+        <div class="quiz-result-label">${state.quizScore >= 4 ? 'Świetny wynik!' : state.quizScore >= 3 ? 'Dobry wynik, jeszcze trochę praktyki.' : 'Spróbuj ponownie — powtórz słownictwo.'}</div>
+        <button class="btn-primary" onclick="resetQuiz()">Zacznij od nowa</button>
+      </div>`;
+    return;
+  }
+  const q = QUIZ[state.quizIdx];
+  c.innerHTML = `
+    <div class="quiz-progress">
+      <span>Pytanie ${state.quizIdx + 1} z ${QUIZ.length}</span>
+      <span>Wynik: ${state.quizScore}</span>
+    </div>
+    <div class="quiz-question">
+      <div class="quiz-question-text">${q.q}</div>
+      <div class="quiz-options" id="quizOptions">
+        ${q.options.map((o, i) => `<button class="quiz-option" data-i="${i}">${o}</button>`).join('')}
+      </div>
+      <div id="quizHint" style="display:none;" class="quiz-hint"></div>
+      <div id="quizActions" class="quiz-actions" style="display:none;">
+        <button class="btn-primary" onclick="nextQuiz()">Następne →</button>
+      </div>
+    </div>
+  `;
+  state.quizLocked = false;
+  c.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => answerQuiz(parseInt(btn.dataset.i)));
+  });
+}
+
+function answerQuiz(i) {
+  if (state.quizLocked) return;
+  state.quizLocked = true;
+  const q = QUIZ[state.quizIdx];
+  const options = document.querySelectorAll('.quiz-option');
+  options.forEach(o => o.classList.add('locked'));
+  options[q.correct].classList.add('correct');
+  if (i !== q.correct) options[i].classList.add('wrong');
+  else state.quizScore++;
+  document.getElementById('quizHint').style.display = 'block';
+  document.getElementById('quizHint').textContent = q.hint;
+  document.getElementById('quizActions').style.display = 'block';
+}
+
+window.nextQuiz = function () {
+  state.quizIdx++;
+  if (state.quizIdx >= QUIZ.length) addQuizResult(state.quizScore, QUIZ.length);
+  renderQuiz();
+};
+
+window.resetQuiz = function () {
+  state.quizIdx = 0;
+  state.quizScore = 0;
+  renderQuiz();
+};
+
+/* ============ TRAINER ============ */
+function renderEmployees() {
+  document.getElementById('employeeTbody').innerHTML = EMPLOYEES.map(e => `
+    <tr>
+      <td>
+        <div class="employee-cell">
+          <div class="employee-avatar">${e.initials}</div>
+          <div><strong>${e.name}</strong></div>
+        </div>
+      </td>
+      <td><span class="level-badge level-${(e.level.split('→').pop() || e.level).trim()}">${e.level}</span></td>
+      <td>${e.sessions}</td>
+      <td><strong>${e.score}%</strong></td>
+      <td>
+        <span class="mini-progress"><span class="mini-progress-fill" style="width:${e.score}%"></span></span>
+      </td>
+      <td><span class="status-badge ${e.active ? 'status-active' : 'status-inactive'}">${e.active ? 'Aktywny' : 'Nieaktywny'}</span></td>
+    </tr>
+  `).join('');
+}
+
+document.getElementById('assignBtn').addEventListener('click', () => {
+  const emp = document.getElementById('assignEmployee').value;
+  const scen = document.getElementById('assignScenario').value;
+  showToast(`Przypisano: ${scen} → ${emp}`);
+});
+
+/* ============ CHARTS ============ */
+window._charts = {};
+
+function initCharts() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const textColor = isDark ? '#b3bccd' : '#5a6478';
+  const gridColor = isDark ? '#2a3349' : '#e2e6ef';
+
+  const wc = document.getElementById('weeklyChart');
+  if (wc && !window._charts.weekly) {
+    const allSessions = getStats().allSessions;
+    let labels, chartData;
+    if (allSessions.length >= 2) {
+      const last8 = allSessions.slice(-8);
+      labels = last8.map((s, i) => {
+        const d = new Date(s.date);
+        return d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' });
+      });
+      chartData = last8.map(s => s.avg);
+      const desc = document.getElementById('weeklyChartDesc');
+      if (desc) desc.textContent = `Ostatnie ${last8.length} sesji z asystentem AI`;
+    } else {
+      labels = ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8'];
+      chartData = [58, 63, 67, 62, 71, 74, 76, 78];
+      const desc = document.getElementById('weeklyChartDesc');
+      if (desc) desc.textContent = 'Dane przykładowe — przeprowadź sesje aby zobaczyć realne wyniki';
+    }
+    window._charts.weekly = new Chart(wc.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Wynik sesji (%)',
+          data: chartData,
+          borderColor: '#1e6fbf',
+          backgroundColor: 'rgba(30, 111, 191, 0.1)',
+          tension: 0.35,
+          fill: true,
+          pointBackgroundColor: '#1e6fbf',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          borderWidth: 2.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: false, min: 0, max: 100, grid: { color: gridColor }, ticks: { color: textColor, callback: v => v + '%' } },
+          x: { grid: { display: false }, ticks: { color: textColor } }
+        }
+      }
+    });
+  }
+
+  const dc = document.getElementById('donutChart');
+  if (dc && !window._charts.donut) {
+    window._charts.donut = new Chart(dc.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Lekcje', 'Symulacje AI', 'Słownictwo', 'Quizy'],
+        datasets: [{
+          data: [35, 40, 15, 10],
+          backgroundColor: ['#1e6fbf', '#8b5cf6', '#22c55e', '#f59e0b'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '65%',
+        plugins: { legend: { position: 'bottom', labels: { color: textColor, padding: 12, font: { size: 12 } } } }
+      }
+    });
+  }
+}
+
+/* ============ LOCAL STORAGE ============ */
+const LS_KEY = 'linguawork_data_v1';
+
+function loadStorage() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    const defaults = { sessions: [], lessonsDone: [1, 2, 6], quizResults: [], flashcardsSeen: 0, lastActivityDate: null, streak: 0, totalWords: 0 };
+    if (!raw) return defaults;
+    return { ...defaults, ...JSON.parse(raw) };
+  } catch (e) {
+    return { sessions: [], lessonsDone: [1, 2, 6], quizResults: [], flashcardsSeen: 0, lastActivityDate: null, streak: 0, totalWords: 0 };
+  }
+}
+
+function saveStorage(data) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch (e) {}
+}
+
+function updateStreak() {
+  const data = loadStorage();
+  const today = new Date().toISOString().split('T')[0];
+  if (!data.lastActivityDate) {
+    data.streak = 1; data.lastActivityDate = today;
+  } else {
+    const diffDays = Math.floor((new Date(today) - new Date(data.lastActivityDate)) / 86400000);
+    if (diffDays === 0) { /* same day */ }
+    else if (diffDays === 1) { data.streak += 1; data.lastActivityDate = today; }
+    else { data.streak = 1; data.lastActivityDate = today; }
+  }
+  saveStorage(data);
+  return data.streak;
+}
+
+function addSession(scores) {
+  const data = loadStorage();
+  const avg = Math.round((scores.grammar_score + scores.vocabulary_score + scores.formality_score + scores.communication_score) / 4);
+  data.sessions.push({
+    id: Date.now(),
+    scenario: state.scenario,
+    scenarioLabel: SCENARIOS[state.scenario].label,
+    date: new Date().toISOString(),
+    grammar: scores.grammar_score,
+    vocabulary: scores.vocabulary_score,
+    formality: scores.formality_score,
+    communication: scores.communication_score,
+    avg
+  });
+  data.totalWords = (data.totalWords || 0) + Math.max(1, Math.floor(avg / 12));
+  data.lastActivityDate = new Date().toISOString().split('T')[0];
+  saveStorage(data);
+  updateStreak();
+  refreshAllKPIs();
+}
+
+function markLessonDone(lessonId) {
+  const data = loadStorage();
+  if (!data.lessonsDone.includes(lessonId)) {
+    data.lessonsDone.push(lessonId);
+    data.lastActivityDate = new Date().toISOString().split('T')[0];
+    saveStorage(data);
+    updateStreak();
+    refreshAllKPIs();
+    return true;
+  }
+  return false;
+}
+
+function addQuizResult(score, total) {
+  const data = loadStorage();
+  data.quizResults.push({ date: new Date().toISOString(), score, total });
+  data.totalWords = (data.totalWords || 0) + score * 2;
+  data.lastActivityDate = new Date().toISOString().split('T')[0];
+  saveStorage(data);
+  updateStreak();
+  refreshAllKPIs();
+}
+
+function trackFlashcard() {
+  const data = loadStorage();
+  data.flashcardsSeen = (data.flashcardsSeen || 0) + 1;
+  data.totalWords = (data.totalWords || 0) + 1;
+  saveStorage(data);
+}
+
+function getStats() {
+  const data = loadStorage();
+  const sessions = data.sessions || [];
+  const avgScore = sessions.length > 0 ? Math.round(sessions.reduce((s, x) => s + x.avg, 0) / sessions.length) : null;
+  const lessonsDoneCount = (data.lessonsDone || []).length;
+  const words = (data.totalWords || 0) + (data.flashcardsSeen || 0);
+  const hours = Math.round(((lessonsDoneCount * 15) + (sessions.length * 20) + ((data.quizResults || []).length * 5)) / 60 * 10) / 10;
+  return { sessions: sessions.length, lessonsDone: lessonsDoneCount, avgScore, streak: data.streak || 0, words, hours, recentSessions: [...sessions].reverse().slice(0, 5), allSessions: sessions };
+}
+
+function refreshAllKPIs() {
+  const s = getStats();
+  // Topbar streak
+  document.getElementById('streakBadge').textContent = `🔥 ${s.streak} ${s.streak === 1 ? 'dzień' : 'dni'} z rzędu`;
+  // Dashboard KPIs
+  const kL = document.getElementById('kpiLessons');
+  const kS = document.getElementById('kpiSessions');
+  const kW = document.getElementById('kpiWords');
+  if (kL) { kL.textContent = s.lessonsDone; document.getElementById('kpiLessonsTrend').textContent = s.lessonsDone > 0 ? `ukończonych z 8` : '—'; }
+  if (kS) { kS.textContent = s.sessions; document.getElementById('kpiSessionsTrend').textContent = s.sessions > 0 ? `łącznie przeprowadzonych` : '—'; }
+  if (kW) { kW.textContent = s.words; document.getElementById('kpiWordsTrend').textContent = s.words > 0 ? `słów w bazie` : '—'; }
+  // Progress KPIs
+  const pH = document.getElementById('progHours');
+  const pA = document.getElementById('progAvgScore');
+  const pS = document.getElementById('progStreak');
+  const pW = document.getElementById('progWords');
+  if (pH) pH.textContent = s.hours + 'h';
+  if (pA) { pA.textContent = s.avgScore !== null ? s.avgScore + '%' : '—'; document.getElementById('progAvgTrend').textContent = s.sessions > 0 ? `z ${s.sessions} sesji` : 'brak sesji'; }
+  if (pS) pS.textContent = s.streak;
+  if (pW) { pW.textContent = s.words; document.getElementById('progWordsTrend').textContent = s.words > 0 ? `poznanych słów` : '—'; }
+  // Activity feed
+  renderActivityFeed(s.recentSessions);
+  // Session history card
+  renderSessionHistory(s.recentSessions);
+  // Update charts if progress view active
+  if (document.getElementById('view-progress').classList.contains('active')) {
+    if (window._charts && window._charts.weekly) { window._charts.weekly.destroy(); window._charts.weekly = null; }
+    initCharts();
+  }
+}
+
+function renderActivityFeed(sessions) {
+  const el = document.getElementById('activityFeed');
+  if (!el) return;
+  if (sessions.length === 0) {
+    el.innerHTML = `<div class="activity-item"><span class="activity-dot blue"></span><div class="activity-text"><div>Witaj w LinguaWork AI! Zacznij pierwszą sesję.</div><div class="activity-date">Dziś</div></div></div>`;
+    return;
+  }
+  const colors = ['blue', 'green', 'violet', 'warning', 'blue'];
+  el.innerHTML = sessions.map((s, i) => {
+    const d = new Date(s.date);
+    const dateStr = d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }) + ' · ' + d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    return `<div class="activity-item">
+      <span class="activity-dot ${colors[i % colors.length]}"></span>
+      <div class="activity-text">
+        <div>Sesja AI: <strong>${escapeHtml(s.scenarioLabel)}</strong> · wynik <strong>${s.avg}%</strong></div>
+        <div class="activity-date">${dateStr}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSessionHistory(sessions) {
+  const el = document.getElementById('sessionHistoryList');
+  if (!el) return;
+  if (sessions.length === 0) {
+    el.innerHTML = `<div style="color:var(--text-mute);font-size:13px;padding:12px 0;">Brak zapisanych sesji. Przeprowadź rozmowę i kliknij „Zakończ i oceń".</div>`;
+    return;
+  }
+  el.innerHTML = sessions.map(s => {
+    const d = new Date(s.date);
+    const dateStr = d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' });
+    const color = s.avg >= 80 ? 'var(--success)' : s.avg >= 60 ? 'var(--accent)' : 'var(--warning)';
+    return `<div class="activity-item" style="align-items:center;">
+      <span class="activity-dot blue"></span>
+      <div class="activity-text" style="flex:1;">
+        <div><strong>${escapeHtml(s.scenarioLabel)}</strong></div>
+        <div class="activity-date">${dateStr} · Gramatyka ${s.grammar}% · Słownictwo ${s.vocabulary}% · Komunikacja ${s.communication}%</div>
+      </div>
+      <div style="font-size:22px;font-weight:700;color:${color};margin-left:12px;">${s.avg}%</div>
+    </div>`;
+  }).join('');
+}
+
+window.confirmReset = function () {
+  if (confirm('Usunąć wszystkie zapisane dane postępów? Tej operacji nie można cofnąć.')) {
+    localStorage.removeItem(LS_KEY);
+    showToast('Dane zresetowane');
+    setTimeout(() => location.reload(), 600);
+  }
+};
+
+/* ============ INIT ============ */
+function initApp() {
+  updateStreak();
+  renderLessons();
+  renderScenarioTabs();
+  renderVocabSets();
+  updateFlashcard();
+  renderEmployees();
+  selectScenario(state.scenario);
+  animateProgressBars();
+  refreshAllKPIs();
+}
+
+// Auto-start z wbudowanym kluczem API
+initApp();
+</script>
+</body>
+</html>
