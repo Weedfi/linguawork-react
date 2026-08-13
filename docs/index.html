@@ -2219,7 +2219,8 @@ const VIEW_TITLES = {
 
 /* ============ GEMINI API ============ */
 // Cloudflare Worker jako proxy — klucz API jest bezpiecznie ukryty na serwerze
-const PROXY_URL = 'https://linguawork-gemini.dawidfilasdf.workers.dev';
+// Model gemini-flash-latest jest dostępny dla nowych kluczy (starsze gemini-2.5-flash zostały zablokowane)
+const PROXY_URL = 'https://linguawork-gemini.dawidfilasdf.workers.dev/?model=gemini-flash-latest';
 
 async function geminiTest() {
   try {
@@ -2264,9 +2265,8 @@ async function geminiSend(systemPrompt, history, userMessage) {
     body: JSON.stringify({
       contents,
       generationConfig: {
-        maxOutputTokens: 800,
-        temperature: 0.8,
-        thinkingConfig: { thinkingBudget: 0 }
+        maxOutputTokens: 2000,
+        temperature: 0.8
       }
     })
   });
@@ -2291,9 +2291,8 @@ async function geminiRaw(prompt) {
     body: JSON.stringify({
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
-        maxOutputTokens: 1500,
-        temperature: 0.3,
-        thinkingConfig: { thinkingBudget: 0 }
+        maxOutputTokens: 3000,
+        temperature: 0.3
       }
     })
   });
