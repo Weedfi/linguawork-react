@@ -2252,23 +2252,32 @@ async function geminiTest() {
 
 async function geminiSend(systemPrompt, history, userMessage) {
   const contents = [];
-  if (systemPrompt) {
-    contents.push({ role: 'user', parts: [{ text: 'SYSTEM INSTRUCTION: ' + systemPrompt }] });
-    contents.push({ role: 'model', parts: [{ text: 'Understood. I will follow these instructions.' }] });
-  }
   for (const m of history) contents.push(m);
   if (userMessage) contents.push({ role: 'user', parts: [{ text: userMessage }] });
+
+  // Gemini API wymaga zakończenia contents na turn 'user'.
+  // Jeśli history jest pusta i brak userMessage — dodaj instrukcję startową.
+  if (contents.length === 0) {
+    contents.push({ role: 'user', parts: [{ text: 'Please start the conversation.' }] });
+  }
+
+  const body = {
+    contents,
+    generationConfig: {
+      maxOutputTokens: 2000,
+      temperature: 0.8
+    }
+  };
+
+  // Użyj nowszego formatu systemInstruction (rekomendowany dla Gemini API)
+  if (systemPrompt) {
+    body.systemInstruction = { parts: [{ text: systemPrompt }] };
+  }
 
   const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents,
-      generationConfig: {
-        maxOutputTokens: 2000,
-        temperature: 0.8
-      }
-    })
+    body: JSON.stringify(body)
   });
   if (!res.ok) {
     let detail = 'HTTP ' + res.status;
