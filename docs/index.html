@@ -2105,7 +2105,7 @@ a:hover { text-decoration: underline; }
 <script>
 /* ============ STATE ============ */
 const state = {
-  apiKey: 'AIzaSyCElvtH-MvCJeF-0qYwbM6I1W56NxGRw6g',
+  apiKey: '',
   scenario: 'client',
   chatHistory: [],
   isThinking: false,
@@ -3068,19 +3068,54 @@ window.confirmReset = function () {
 };
 
 /* ============ INIT ============ */
+const KEY_STORAGE = 'linguawork_gemini_key';
+
 function initApp() {
+  // Wczytaj klucz z localStorage (per przeglądarka użytkownika)
+  const savedKey = localStorage.getItem(KEY_STORAGE);
+  if (savedKey) state.apiKey = savedKey;
+
   updateStreak();
   renderLessons();
   renderScenarioTabs();
   renderVocabSets();
   updateFlashcard();
   renderEmployees();
-  selectScenario(state.scenario);
   animateProgressBars();
   refreshAllKPIs();
+
+  if (state.apiKey) {
+    selectScenario(state.scenario);
+  } else {
+    // Brak klucza — pokaż modal do wpisania
+    openKeySetup();
+  }
 }
 
-// Auto-start z wbudowanym kluczem API
+function openKeySetup() {
+  newKeyInput.value = '';
+  modalError.classList.remove('visible');
+  changeKeyModal.classList.add('visible');
+  setTimeout(() => newKeyInput.focus(), 100);
+}
+
+// Zapisz klucz do localStorage po pomyślnej walidacji
+const originalSaveClick = saveKeyBtn.onclick;
+saveKeyBtn.addEventListener('click', () => {
+  // Po pomyślnym zapisie klucza — zapamiętaj go w localStorage
+  const checkSaved = setInterval(() => {
+    if (state.apiKey && !changeKeyModal.classList.contains('visible')) {
+      localStorage.setItem(KEY_STORAGE, state.apiKey);
+      clearInterval(checkSaved);
+      // Uruchom scenariusz teraz, gdy mamy klucz
+      if (chatMessages.children.length === 0) {
+        selectScenario(state.scenario);
+      }
+    }
+  }, 200);
+  setTimeout(() => clearInterval(checkSaved), 10000);
+});
+
 initApp();
 </script>
 </body>
