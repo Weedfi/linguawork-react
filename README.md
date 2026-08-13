@@ -110,65 +110,22 @@ Client-side applications that integrate with third-party APIs face a fundamental
 
 ---
 
-## 🎭 Two Implementations
-
-This repository contains **two complete implementations** demonstrating different architectural approaches:
-
-### 🟢 Client-Side Prototype ([`docs/index.html`](docs/index.html))
-- **Live at:** [weedfi.github.io/linguawork-react](https://weedfi.github.io/linguawork-react/)
-- Single-page vanilla JavaScript application
-- localStorage persistence
-- Cloudflare Worker proxy for API key security
-- **Best for:** quick demos, single-user prototypes
-
-### 🔵 Full-Stack Web Application ([`src/`](src/))
-- React 18 SPA with Vite build system
-- REST API backend at [github.com/Weedfi/linguawork-backend](https://github.com/Weedfi/linguawork-backend)
-- JWT-based authentication
-- Role-based access control (Employee / Trainer / Admin)
-- PostgreSQL database with Prisma ORM
-- **Best for:** production deployments, multi-tenant environments
-
-Both implementations share the same design system, feature set and user experience.
-
----
-
 ## 🚀 Getting Started
 
-### Prerequisites
-
-- **Node.js 20+** (for the React version)
-- **A modern browser** (for the vanilla version)
-- **A Gemini API key** if running your own instance ([get one free](https://aistudio.google.com/app/apikey))
-
-### Run the Full-Stack React App
+Want to run your own instance locally?
 
 ```bash
-# 1. Start the backend (in a separate terminal)
-git clone https://github.com/Weedfi/linguawork-backend.git
-cd linguawork-backend
-npm install
-cp .env.example .env  # then edit with your keys
-npx prisma db push
-node prisma/seed.js
-node src/server.js
+# Clone the repository
+git clone https://github.com/Weedfi/linguawork-react.git
+cd linguawork-react
 
-# 2. Start the frontend
-cd ../linguawork-react
-npm install
-cp .env.example .env  # then edit VITE_API_URL
-npm run dev
+# Serve the docs folder with any static server
+npx serve docs
 
-# Open http://localhost:5173
+# Open http://localhost:3000
 ```
 
-### Demo Accounts (backend seed)
-
-| Role | Email | Password |
-|---|---|---|
-| 👤 Employee | jan.kowalski@linguawork.demo | demo123 |
-| 👨‍🏫 Trainer | trener@linguawork.demo | trainer123 |
-| ⚙️ Admin | admin@linguawork.demo | admin123 |
+You'll need to deploy your own Cloudflare Worker with a Gemini API key ([get one free](https://aistudio.google.com/app/apikey)) and update the `PROXY_URL` constant in `docs/index.html`.
 
 ---
 
