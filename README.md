@@ -151,6 +151,6 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <div align="center">
 
-**[🌐 Try the live demo](https://weedfi.github.io/linguawork-react/)** · **[🐙 View backend code](https://github.com/Weedfi/linguawork-backend)** · **[📧 Contact author](mailto:dawidfilasdf@gmail.com)**
+**[🌐 Try the live demo](https://weedfi.github.io/linguawork-react/)** · **[🐙 View backend code](https://github.com/Weedfi/linguawork-backend)**
 
 </div>
